@@ -15,7 +15,7 @@
             text-align: center;
             border: 0.5px solid;
         }
-        td {
+        table td {
             border: 1px solid;
         }
     </style>
@@ -33,9 +33,14 @@
             </thead>
             <tbody>
                 <% for(let i = 0; i < currentMatch.length; i++) { %>
+                    
                     <tr>
-                        <td><%= JSON.stringify(currentMatch[i].championName) %></td>
-                        <td><%= JSON.stringify(currentMatch[i].summonerName) %></td>
+                        <!-- <td></td> -->
+                        <td>
+                            <img src="<%= `http://ddragon.leagueoflegends.com/cdn/11.6.1/img/champion/${currentMatch[i].championName}.png` %>" alt="">
+                            <div><%= currentMatch[i].championName %></div>
+                        </td>
+                        <td><%= currentMatch[i].summonerName %></td>
                         <td><%= JSON.stringify(currentMatch[i].skillCoolDowns) %></td>
                     </tr>
                 <% } %>

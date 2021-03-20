@@ -7,7 +7,6 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    console.log(req.body);
     try {
         let recentVersion = await parseSkillCooldown.getRecentVersion();
         let championSkillCooldowns = await parseSkillCooldown.getChampionSkillCoolDowns(recentVersion);
