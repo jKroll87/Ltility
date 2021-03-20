@@ -1,4 +1,5 @@
 const axios = require('axios');
+const config = require('config');
 const { response } = require('express');
 
 const ddragonServer = axios.create({
@@ -8,7 +9,7 @@ const riotDataServer = axios.create({
     baseURL: 'https://kr.api.riotgames.com/',
 });
 
-const api_key = 'RGAPI-b955fcf5-205a-4bef-9e37-e3499122b5ee';
+const api_key = config.get('api_key');
 
 // Version
 exports.getRecentVersion = async () => {
@@ -151,6 +152,8 @@ exports.getMatch = async (gameId) => {
 exports.getCurrentMatch = async (summonerId, key2ChampionNameList, championSkillCooldowns) => {
     let matchParticipants = undefined;
     let participantInfo = new Array();
+    let ret = {};
+    ret.status = "OK";
 
     await riotDataServer.get('/lol/spectator/v4/active-games/by-summoner/' + summonerId + '?api_key=' + api_key)
     .then((response) => {
@@ -162,13 +165,14 @@ exports.getCurrentMatch = async (summonerId, key2ChampionNameList, championSkill
                 'skillCoolDowns': championSkillCooldowns[key2ChampionNameList[matchParticipants[i].championId]]
             };
         }
+        ret.result = participantInfo;
     })
     .catch((error) => {
         if (error.response.status === 404) {
-            participantInfo = "이 소환사는 게임 중이 아닙니다";
+            ret.status = "FAILED";
         }
         console.log(error);
     });
 
-    return participantInfo;
+    return ret;
 }

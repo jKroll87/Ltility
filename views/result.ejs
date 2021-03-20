@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .layer {
+            width: 1000px;
+            margin: 0 auto;
+        }
+        .table {
+            width: 1000px;
+            text-align: center;
+            border: 0.5px solid;
+        }
+        td {
+            border: 1px solid;
+        }
+    </style>
+</head>
+<body>
+    <div class="layer">
+        <table class="table">
+            <caption>LOL Skill Cooldowns</caption>
+            <thead>
+                <tr>
+                    <th>챔피언이름</th>
+                    <th>소환사명</th>
+                    <th>스킬쿨타임</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(let i = 0; i < currentMatch.length; i++) { %>
+                    <tr>
+                        <td><%= JSON.stringify(currentMatch[i].championName) %></td>
+                        <td><%= JSON.stringify(currentMatch[i].summonerName) %></td>
+                        <td><%= JSON.stringify(currentMatch[i].skillCoolDowns) %></td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
