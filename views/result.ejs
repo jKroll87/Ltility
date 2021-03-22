@@ -33,15 +33,20 @@
             </thead>
             <tbody>
                 <% for(let i = 0; i < currentMatch.length; i++) { %>
-                    
                     <tr>
-                        <!-- <td></td> -->
                         <td>
-                            <img src="<%= `http://ddragon.leagueoflegends.com/cdn/11.6.1/img/champion/${currentMatch[i].championName}.png` %>" alt="">
+                            <img src="<%= `http://ddragon.leagueoflegends.com/cdn/${recentVersion}/img/champion/${currentMatch[i].championName}.png` %>" alt="">
                             <div><%= currentMatch[i].championName %></div>
                         </td>
                         <td><%= currentMatch[i].summonerName %></td>
-                        <td><%= JSON.stringify(currentMatch[i].skillCoolDowns) %></td>
+                        <td>
+                            <% for(let j = 0; j < 4; j++) { %>
+                                <div style="display:inline-block;">
+                                    <img src="<%= `http://ddragon.leagueoflegends.com/cdn/${recentVersion}/img/spell/${currentMatch[i].skillNames[j]}.png` %>" alt="">
+                                    <div><%= JSON.stringify(currentMatch[i].skillCoolDowns[j]) %></div>
+                                </div>
+                            <% } %>
+                        </td>
                     </tr>
                 <% } %>
             </tbody>

@@ -1,12 +1,11 @@
 const axios = require('axios');
 const config = require('config');
-const { response } = require('express');
 
 const ddragonServer = axios.create({
-    baseURL: 'http://ddragon.leagueoflegends.com/',
+    baseURL: 'http://ddragon.leagueoflegends.com/'
 });
 const riotDataServer = axios.create({
-    baseURL: 'https://kr.api.riotgames.com/',
+    baseURL: 'https://kr.api.riotgames.com/'
 });
 
 const api_key = config.get('api_key');
@@ -34,7 +33,10 @@ let getChampionCooldownFromName = (recentVersion, name, championSkillCooldowns) 
         for (let i = 0; i < 4; i++) {
             championSkillCooldowns[name].push(response.data.data[name].spells[i].cooldown);
         }
-    });
+    })
+    .catch((err) => {
+        console.log(err);
+    }) 
 }
 
 exports.getChampionSkillCoolDowns = async (recentVersion) => {
@@ -56,6 +58,41 @@ exports.getChampionSkillCoolDowns = async (recentVersion) => {
     })
 
     return championSkillCooldowns;
+}
+
+// ChampionSkillNames
+let getChampionSkillNameFromName = (recentVersion, name, championSkillNames) => {
+    return ddragonServer.get('cdn/' + recentVersion + '/data/ko_KR/champion/' + name +'.json')
+    .then((response) => {
+        championSkillNames[name] = [];
+        for (let i = 0; i < 4; i++) {
+            championSkillNames[name].push(response.data.data[name].spells[i].id);
+        }
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+}
+
+exports.getChampionSkillNames = async (recentVersion) => {
+    let championName = undefined;
+    let championSkillNames = new Object();
+
+    await ddragonServer.get('cdn/' + recentVersion + '/data/ko_KR/champion.json')
+    .then((response) => {
+        championName = Object.keys(response.data.data);
+    })
+    .then(async () => {
+        let awaits = championName.map((name) => {
+            return getChampionSkillNameFromName(recentVersion, name, championSkillNames);
+        })
+        await Promise.all(awaits);
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+
+    return championSkillNames;
 }
 
 // ChampionName
@@ -149,7 +186,7 @@ exports.getMatch = async (gameId) => {
 }
 
 // CurrentMatch
-exports.getCurrentMatch = async (summonerId, key2ChampionNameList, championSkillCooldowns) => {
+exports.getCurrentMatch = async (summonerId, key2ChampionNameList, championSkillCooldowns, championSkillNames) => {
     let matchParticipants = undefined;
     let participantInfo = new Array();
     let ret = {};
@@ -162,7 +199,8 @@ exports.getCurrentMatch = async (summonerId, key2ChampionNameList, championSkill
             participantInfo[i] = {
                 'championName': key2ChampionNameList[matchParticipants[i].championId],
                 'summonerName': matchParticipants[i].summonerName,
-                'skillCoolDowns': championSkillCooldowns[key2ChampionNameList[matchParticipants[i].championId]]
+                'skillCoolDowns': championSkillCooldowns[key2ChampionNameList[matchParticipants[i].championId]],
+                'skillNames': championSkillNames[key2ChampionNameList[matchParticipants[i].championId]]
             };
         }
         ret.result = participantInfo;
