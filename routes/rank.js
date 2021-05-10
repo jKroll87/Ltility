@@ -4,6 +4,7 @@ const parseSkillCooldown = require("../parseSkillCooldown.js");
 
 router.get('/rank', async (req, res) => {
     let entries = await parseSkillCooldown.getLeagueEntries('challenger');
+    res.writeHead(200, {'Access-Control-Allow-Origin': '*'});
     res.json(entries);
 });
 
