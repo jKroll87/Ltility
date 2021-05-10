@@ -24,8 +24,8 @@ router.post('/', async (req, res) => {
         else {
             res.send("이 소환사는 게임 중이 아닙니다.");
         }
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
+        console.log(err);
     }
 });
 

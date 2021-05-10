@@ -214,3 +214,18 @@ exports.getCurrentMatch = async (summonerId, key2ChampionNameList, championSkill
 
     return ret;
 }
+
+// challenger/grandmaster/master
+exports.getLeagueEntries = async(tier) => {
+    let entries;
+
+    await riotDataServer.get(`/lol/league/v4/${tier}leagues/by-queue/RANKED_SOLO_5x5?api_key=${api_key}`)
+    .then((res) => {
+        entries = res.data.entries;
+        entries.sort((a, b) => {
+            return b.leaguePoints - a.leaguePoints;
+        })
+    })
+
+    return entries;
+}
