@@ -4,7 +4,7 @@ const parseSkillCooldown = require("../parseSkillCooldown.js");
 
 router.get('/rank', async (req, res) => {
     let entries = await parseSkillCooldown.getLeagueEntries('challenger');
-    res.send(entries);
+    res.json(entries);
 });
 
 module.exports = router;
