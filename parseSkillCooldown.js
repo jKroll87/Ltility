@@ -227,6 +227,7 @@ exports.getLeagueEntries = async(tier) => {
         })
         for (let i in entries) {
             entries[i].rank = parseInt(i) + 1;
+            entries[i].tier = tier;
         }
     })
 
