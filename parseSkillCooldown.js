@@ -225,6 +225,9 @@ exports.getLeagueEntries = async(tier) => {
         entries.sort((a, b) => {
             return b.leaguePoints - a.leaguePoints;
         })
+        for (let i in entries) {
+            entries[i].rank = parseInt(i) + 1;
+        }
     })
 
     return entries;
