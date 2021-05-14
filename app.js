@@ -13,10 +13,10 @@ app.use('static', express.static(path.resolve(__dirname, "./static")));
 //app.engine('html', require('ejs').renderFile);
 
 const index = require('./routes/index');
-const rank = require('./routes/rank');
+const api = require('./routes/api');
 
 app.use('/', index);
-app.use('/', rank);
+app.use('/api', api);
 
 app.listen(port, () => {
     console.log(`listening on http://localhost:${port}`)
