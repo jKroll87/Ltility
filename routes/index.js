@@ -34,7 +34,6 @@ router.get('/rank', async (req, res) => {
     let grandmasterEntries = await parseSkillCooldown.getLeagueEntries('grandmaster');
     let masterEntries = await parseSkillCooldown.getLeagueEntries('master');
     let entries = [...challengerEntries, ...grandmasterEntries, ...masterEntries];
-    res.header("Access-Control-Allow-Origin", "*");
     res.json(entries);
 });
 
