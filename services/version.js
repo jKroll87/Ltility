@@ -4,14 +4,16 @@ const ddragonAPI = axios.create({
     baseURL: 'http://ddragon.leagueoflegends.com/'
 });
 
-module.exports = {
-    async getRecentVersion() {
+class VersionService {
+    async getCurrentVersion() {
         try {
             const res = await ddragonAPI.get('api/versions.json');
-            let recentVersion = res.data[0];
-            return recentVersion;
+            let currentVersion = res.data[0];
+            return currentVersion;
         } catch (err) {
             return err;
         }
     }
 }
+
+export default VersionService;
