@@ -1,21 +1,19 @@
 {
-  "name": "LolSkillCooldowns",
+  "name": "ltility_back",
   "version": "1.0.0",
   "description": "",
-  "main": "test.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "jKroll87 <bingquadog@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
-    "config": "^3.3.6",
+    "dotenv": "^10.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
-    "nodemon": "^2.0.7",
-    "path": "^0.12.7"
+    "nodemon": "^2.0.7"
   }
 }

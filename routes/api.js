@@ -11,4 +11,24 @@ router.get('/rank', async (req, res) => {
     res.json(entries);
 });
 
+const version = require('../components/version/version');
+
+router.get('/version', async (req, res) => {
+    let ret = await version.getRecentVersion();
+    res.header("Access-Control-Allow-Origin", "*");
+    res.json({ version: ret });
+})
+
+router.get('/champion', async (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+})
+
+router.get('/champion/:id', async (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+})
+
+router.get('/matches/:summonerid', async (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+});
+
 module.exports = router;

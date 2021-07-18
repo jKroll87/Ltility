@@ -1,125 +1,124 @@
 const axios = require('axios');
-const config = require('config');
 
-const ddragonServer = axios.create({
+const ddragonAPI = axios.create({
     baseURL: 'http://ddragon.leagueoflegends.com/'
 });
-const riotDataServer = axios.create({
+const riotAPI = axios.create({
     baseURL: 'https://kr.api.riotgames.com/'
 });
 
-const api_key = config.get('api_key');
+let api_key = process.env.API_KEY;
 
 // Version
 exports.getRecentVersion = async () => {
     let recentVersion = undefined;
 
-    await ddragonServer.get('api/versions.json')
-    .then((response) => {
-        recentVersion = response.data[0];
-    })
-    .catch((error) => {
-        console.log(error);
-    });
+    await ddragonAPI.get('api/versions.json')
+        .then((res) => {
+            recentVersion = res.data[0];
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 
     return recentVersion;
 }
 
 // ChampionSkillCooldowns
 let getChampionCooldownFromName = (recentVersion, name, championSkillCooldowns) => {
-    return ddragonServer.get('cdn/' + recentVersion + '/data/ko_KR/champion/' + name + '.json')
-    .then((response) => {
-        championSkillCooldowns[name] = [];
-        for (let i = 0; i < 4; i++) {
-            championSkillCooldowns[name].push(response.data.data[name].spells[i].cooldown);
-        }
-    })
-    .catch((err) => {
-        console.log(err);
-    }) 
+    return ddragonAPI.get('cdn/' + recentVersion + '/data/ko_KR/champion/' + name + '.json')
+        .then((res) => {
+            championSkillCooldowns[name] = [];
+            for (let i = 0; i < 4; i++) {
+                championSkillCooldowns[name].push(res.data.data[name].spells[i].cooldown);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        })
 }
 
 exports.getChampionSkillCoolDowns = async (recentVersion) => {
     let championName = undefined;
     let championSkillCooldowns = new Object();
-    
-    await ddragonServer.get('cdn/' + recentVersion + '/data/ko_KR/champion.json')
-    .then((response) => {
-        championName = Object.keys(response.data.data);
-    })
-    .then(async () => {
-        let awaits = championName.map((name) => {
-            return getChampionCooldownFromName(recentVersion, name, championSkillCooldowns);
+
+    await ddragonAPI.get('cdn/' + recentVersion + '/data/ko_KR/champion.json')
+        .then((res) => {
+            championName = Object.keys(res.data.data);
         })
-        await Promise.all(awaits);
-    })
-    .catch((error) => {
-        console.log(error);
-    })
+        .then(async () => {
+            let awaits = championName.map((name) => {
+                return getChampionCooldownFromName(recentVersion, name, championSkillCooldowns);
+            })
+            await Promise.all(awaits);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
 
     return championSkillCooldowns;
 }
 
 // ChampionSkillNames
 let getChampionSkillNameFromName = (recentVersion, name, championSkillNames) => {
-    return ddragonServer.get('cdn/' + recentVersion + '/data/ko_KR/champion/' + name +'.json')
-    .then((response) => {
-        championSkillNames[name] = [];
-        for (let i = 0; i < 4; i++) {
-            championSkillNames[name].push(response.data.data[name].spells[i].id);
-        }
-    })
-    .catch((err) => {
-        console.log(err);
-    });
+    return ddragonAPI.get('cdn/' + recentVersion + '/data/ko_KR/champion/' + name + '.json')
+        .then((res) => {
+            championSkillNames[name] = [];
+            for (let i = 0; i < 4; i++) {
+                championSkillNames[name].push(res.data.data[name].spells[i].id);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 }
 
 exports.getChampionSkillNames = async (recentVersion) => {
     let championName = undefined;
     let championSkillNames = new Object();
 
-    await ddragonServer.get('cdn/' + recentVersion + '/data/ko_KR/champion.json')
-    .then((response) => {
-        championName = Object.keys(response.data.data);
-    })
-    .then(async () => {
-        let awaits = championName.map((name) => {
-            return getChampionSkillNameFromName(recentVersion, name, championSkillNames);
+    await ddragonAPI.get('cdn/' + recentVersion + '/data/ko_KR/champion.json')
+        .then((res) => {
+            championName = Object.keys(res.data.data);
         })
-        await Promise.all(awaits);
-    })
-    .catch((err) => {
-        console.log(err);
-    })
+        .then(async () => {
+            let awaits = championName.map((name) => {
+                return getChampionSkillNameFromName(recentVersion, name, championSkillNames);
+            })
+            await Promise.all(awaits);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
 
     return championSkillNames;
 }
 
 // ChampionName
 let getChampionKeyFromName = (recentVersion, name, key2ChampionNameList) => {
-    return ddragonServer.get('cdn/' + recentVersion + '/data/ko_KR/champion/' + name + '.json')
-    .then((response) => {
-        key2ChampionNameList[response.data.data[name].key] = name;
-    });
+    return ddragonAPI.get('cdn/' + recentVersion + '/data/ko_KR/champion/' + name + '.json')
+        .then((res) => {
+            key2ChampionNameList[res.data.data[name].key] = name;
+        });
 }
 
 exports.getKey2ChampionNameList = async (recentVersion) => {
     let championName = undefined;
     let key2ChampionNameList = new Object();
-    
-    await ddragonServer.get('cdn/' + recentVersion + '/data/ko_KR/champion.json')
-    .then((response) => {
-        championName = Object.keys(response.data.data);
-    })
-    .then(async () => {
-        let awaits = championName.map((name) => {
-            return getChampionKeyFromName(recentVersion, name, key2ChampionNameList);
+
+    await ddragonAPI.get('cdn/' + recentVersion + '/data/ko_KR/champion.json')
+        .then((res) => {
+            championName = Object.keys(res.data.data);
         })
-        await Promise.all(awaits);
-    })
-    .catch((error) => {
-        console.log(error);
-    })
+        .then(async () => {
+            let awaits = championName.map((name) => {
+                return getChampionKeyFromName(recentVersion, name, key2ChampionNameList);
+            })
+            await Promise.all(awaits);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
 
     return key2ChampionNameList;
 }
@@ -128,13 +127,13 @@ exports.getKey2ChampionNameList = async (recentVersion) => {
 exports.getSummonerId = async (summonerName) => {
     let summonerId = undefined;
 
-    await riotDataServer.get("lol/summoner/v4/summoners/by-name/" + encodeURI(summonerName) + '?api_key=' + api_key)
-    .then((response) => {
-        summonerId = response.data.id;
-    })
-    .catch((error) => {
-        console.log(error);
-    })
+    await riotAPI.get("lol/summoner/v4/summoners/by-name/" + encodeURI(summonerName) + '?api_key=' + api_key)
+        .then((res) => {
+            summonerId = res.data.id;
+        })
+        .catch((error) => {
+            console.log(error);
+        })
 
     return summonerId;
 }
@@ -143,13 +142,13 @@ exports.getSummonerId = async (summonerName) => {
 exports.getSummonerAccountId = async (summonerName) => {
     let summonerAccountId = undefined;
 
-    await riotDataServer.get("lol/summoner/v4/summoners/by-name/" + encodeURI(summonerName) + '?api_key=' + api_key)
-    .then((response) => {
-        summonerAccountId = response.data.accountId;
-    })
-    .catch((error) => {
-        console.log(error);
-    })
+    await riotAPI.get("lol/summoner/v4/summoners/by-name/" + encodeURI(summonerName) + '?api_key=' + api_key)
+        .then((res) => {
+            summonerAccountId = res.data.accountId;
+        })
+        .catch((error) => {
+            console.log(error);
+        })
 
     return summonerAccountId;
 }
@@ -158,14 +157,14 @@ exports.getSummonerAccountId = async (summonerName) => {
 exports.getRecentMatchId = async (summonerAccountId) => {
     let gameId = undefined;
 
-    await riotDataServer.get('lol/match/v4/matchlists/by-account/' + summonerAccountId + '?api_key=' + api_key)
-    .then((response) => {
-        gameId = response.data.matches[0].gameId;
-    })
-    .catch((error) => {
-        console.log(error);
-    })
-    
+    await riotAPI.get('lol/match/v4/matchlists/by-account/' + summonerAccountId + '?api_key=' + api_key)
+        .then((res) => {
+            gameId = res.data.matches[0].gameId;
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+
     return gameId;
 }
 
@@ -173,14 +172,14 @@ exports.getRecentMatchId = async (summonerAccountId) => {
 exports.getMatch = async (gameId) => {
     let match = undefined;
 
-    await riotDataServer.get('lol/match/v4/matches/' + gameId + '?api_key=' + api_key)
-    .then((response) => {
-        console.log(response.data);
-        match = response;
-    })
-    .catch((error) => {
-        console.log(error);
-    });
+    await riotAPI.get('lol/match/v4/matches/' + gameId + '?api_key=' + api_key)
+        .then((res) => {
+            console.log(res.data);
+            match = res;
+        })
+        .catch((error) => {
+            console.log(error);
+        });
 
     return match;
 }
@@ -192,25 +191,25 @@ exports.getCurrentMatch = async (summonerId, key2ChampionNameList, championSkill
     let ret = {};
     ret.status = "OK";
 
-    await riotDataServer.get('/lol/spectator/v4/active-games/by-summoner/' + summonerId + '?api_key=' + api_key)
-    .then((response) => {
-        matchParticipants = response.data.participants;
-        for (let i = 0; i < matchParticipants.length; i++) {
-            participantInfo[i] = {
-                'championName': key2ChampionNameList[matchParticipants[i].championId],
-                'summonerName': matchParticipants[i].summonerName,
-                'skillCoolDowns': championSkillCooldowns[key2ChampionNameList[matchParticipants[i].championId]],
-                'skillNames': championSkillNames[key2ChampionNameList[matchParticipants[i].championId]]
-            };
-        }
-        ret.result = participantInfo;
-    })
-    .catch((error) => {
-        if (error.response.status === 404) {
-            ret.status = "FAILED";
-        }
-        console.log(error);
-    });
+    await riotAPI.get('/lol/spectator/v4/active-games/by-summoner/' + summonerId + '?api_key=' + api_key)
+        .then((res) => {
+            matchParticipants = res.data.participants;
+            for (let i = 0; i < matchParticipants.length; i++) {
+                participantInfo[i] = {
+                    'championName': key2ChampionNameList[matchParticipants[i].championId],
+                    'summonerName': matchParticipants[i].summonerName,
+                    'skillCoolDowns': championSkillCooldowns[key2ChampionNameList[matchParticipants[i].championId]],
+                    'skillNames': championSkillNames[key2ChampionNameList[matchParticipants[i].championId]]
+                };
+            }
+            ret.result = participantInfo;
+        })
+        .catch((error) => {
+            if (error.res.status === 404) {
+                ret.status = "FAILED";
+            }
+            console.log(error);
+        });
 
     return ret;
 }
@@ -225,18 +224,18 @@ exports.getLeagueEntries = async (tier) => {
     }
     // Exception handling at the beginning of the season
 
-    await riotDataServer.get(`/lol/league/v4/${tier}leagues/by-queue/RANKED_SOLO_5x5?api_key=${api_key}`)
-    .then((res) => {
-        entries = res.data.entries;
-        entries.sort((a, b) => {
-            if (a.leaguePoints !== b.leaguePoints) return b.leaguePoints - a.leaguePoints;
-            return a.summonerName > b.summonerName ? 1 : -1;
+    await riotAPI.get(`/lol/league/v4/${tier}leagues/by-queue/RANKED_SOLO_5x5?api_key=${api_key}`)
+        .then((res) => {
+            entries = res.data.entries;
+            entries.sort((a, b) => {
+                if (a.leaguePoints !== b.leaguePoints) return b.leaguePoints - a.leaguePoints;
+                return a.summonerName > b.summonerName ? 1 : -1;
+            })
+            for (let i in entries) {
+                entries[i].rank = parseInt(i) + baseRank[tier];
+                entries[i].tier = tier;
+            }
         })
-        for (let i in entries) {
-            entries[i].rank = parseInt(i) + baseRank[tier];
-            entries[i].tier = tier;
-        }
-    })
 
     return entries;
 }
