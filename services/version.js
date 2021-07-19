@@ -1,4 +1,4 @@
-const {ddragonAPI} = require('../utils/api');
+const { ddragonAPI } = require('../utils/api');
 
 class VersionService {
     async getCurrentVersion() {

@@ -1,10 +1,11 @@
 {
   "name": "ltility_back",
   "version": "1.0.0",
-  "description": "",
+  "description": "Ltility API",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   },
   "keywords": [
     "express",

@@ -1,8 +1,4 @@
-const axios = require('axios');
-
-const riotAPI = axios.create({
-    baseURL: 'https://kr.api.riotgames.com/'
-});
+const { riotAPI } = require('../utils/api');
 
 const api_key = process.env.API_KEY;
 

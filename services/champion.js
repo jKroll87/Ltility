@@ -1,8 +1,8 @@
-const {ddragonAPI} = require('../utils/api')
+const { ddragonAPI } = require('../utils/api');
 
 class ChampionService {
     // getChampions?
-    async getAllChampions(version, region) {
+    async getChampions(version, region) {
         try {
             const res = await ddragonAPI.get(`cdn/${version}/data/${region}/champion.json`);
             return res;
@@ -17,7 +17,7 @@ class ChampionService {
             return res.data;
         } catch (err) {
             console.log(err);
-            return {status:"FAILED", message:"not available champion"};
+            return { status: "FAILED", message: "not available champion" };
         }
     }
 }

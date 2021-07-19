@@ -10,8 +10,8 @@ const version = require('./routes/version');
 // 복수형으로 수정?
 router.use('/champion', champion);
 // router.use('/match', match);
-// router.use('/rank', rank);
-// router.use('/summoner', summoner);
+router.use('/rank', rank);
+router.use('/summoner', summoner);
 router.use('/version', version);
 
 // export default router;
