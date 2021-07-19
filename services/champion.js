@@ -1,10 +1,7 @@
-const axios = require('axios');
-
-const ddragonAPI = axios.create({
-    baseURL: 'http://ddragon.leagueoflegends.com/'
-});
+const {ddragonAPI} = require('../utils/api')
 
 class ChampionService {
+    // getChampions?
     async getAllChampions(version, region) {
         try {
             const res = await ddragonAPI.get(`cdn/${version}/data/${region}/champion.json`);
@@ -13,16 +10,19 @@ class ChampionService {
             return err;
         }
     }
-
     async getChampion(version, region, championName) {
         try {
-            const res = await ddragonAPI.get(`cdn/'${version}/data/${region}/champion/${championName}.json`);
-
+            const res = await ddragonAPI.get(`cdn/${version}/data/${region}/champion/${championName}.json`);
+            res.data.status = "SUCCESS"
+            return res.data;
+        } catch (err) {
+            console.log(err);
+            return {status:"FAILED", message:"not available champion"};
         }
     }
 }
 
-export default ChampionService;
+module.exports = ChampionService;
 
 // ChampionSkillCooldowns
 let getChampionCooldownFromName = (recentVersion, name, championSkillCooldowns) => {

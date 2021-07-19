@@ -1,8 +1,4 @@
-const axios = require('axios');
-
-const ddragonAPI = axios.create({
-    baseURL: 'http://ddragon.leagueoflegends.com/'
-});
+const {ddragonAPI} = require('../utils/api');
 
 class VersionService {
     async getCurrentVersion() {
@@ -16,4 +12,4 @@ class VersionService {
     }
 }
 
-export default VersionService;
+module.exports = VersionService;

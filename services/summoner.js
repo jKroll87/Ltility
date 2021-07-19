@@ -1,29 +1,21 @@
-// SummonerID
-exports.getSummonerId = async (summonerName) => {
-    let summonerId = undefined;
+const axios = require('axios');
 
-    await riotAPI.get("lol/summoner/v4/summoners/by-name/" + encodeURI(summonerName) + '?api_key=' + api_key)
-        .then((res) => {
-            summonerId = res.data.id;
-        })
-        .catch((error) => {
-            console.log(error);
-        })
+const riotAPI = axios.create({
+    baseURL: 'https://kr.api.riotgames.com/'
+});
 
-    return summonerId;
+// require('dotenv').config()
+const api_key = process.env.API_KEY;
+
+class SummonerService {
+    async getSummoner (summonerName) {
+        try {
+            const res = await riotAPI.get(`lol/summoner/v4/summoners/by-name/${encodeURI(summonerName)}?api_key=${api_key}`);
+            return res;
+        } catch (err) {
+            return err;
+        }
+    }
 }
 
-// SummonerAccountID
-exports.getSummonerAccountId = async (summonerName) => {
-    let summonerAccountId = undefined;
-
-    await riotAPI.get("lol/summoner/v4/summoners/by-name/" + encodeURI(summonerName) + '?api_key=' + api_key)
-        .then((res) => {
-            summonerAccountId = res.data.accountId;
-        })
-        .catch((error) => {
-            console.log(error);
-        })
-
-    return summonerAccountId;
-}
+module.exports = SummonerService;
